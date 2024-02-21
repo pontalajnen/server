@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		return
-	}
-
-	fmt.Fprintln(w,
+func helloHandler(c *gin.Context) {
+	fmt.Fprintln(c.Writer,
 		`<!DOCTYPE html>
 	<html>
 	<form method="post" action="/name">
@@ -23,27 +20,29 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	</form></html>`)
 }
 
-func postHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+func postHandler(c *gin.Context) {
+	err := c.Request.ParseForm()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	name := r.Form.Get("firstname")
-	lastname := r.Form.Get("lastname")
+	name := c.Request.Form.Get("firstname")
+	lastname := c.Request.Form.Get("lastname")
 	fmt.Println(name, lastname)
 
-	fmt.Fprintln(w, "Form submitted fine")
+	fmt.Fprintln(c.Writer, "Form submitted fine")
 }
 
 func main() {
 	fmt.Println("Hello from BLHub server!")
 
-	http.HandleFunc("/index.html", helloHandler)
-	http.HandleFunc("/name", postHandler)
+	engine := gin.Default()
 
-	err := http.ListenAndServe(":8080", nil)
+	engine.GET("/index.html", helloHandler)
+	engine.POST("/name", postHandler)
+
+	err := engine.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
