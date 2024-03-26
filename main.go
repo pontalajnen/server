@@ -15,10 +15,10 @@ func helloHandler(c *gin.Context) {
 	// 	`<!DOCTYPE html>
 	// <html>
 	// <form method="post" action="/name">
-	// <label for="firstname">First name:</label>
-	// <input type="text" name="firstname" /><br />
-	// <label for="lastname">Last name:</label>
-	// <input type="text" name="lastname" /><br />
+	// <label for="firstName">First name:</label>
+	// <input type="text" name="firstName" /><br />
+	// <label for="lastName">Last name:</label>
+	// <input type="text" name="lastName" /><br />
 	// <input type="submit" />
 	// </form></html>`)
 
@@ -33,9 +33,9 @@ func postHandler(c *gin.Context) {
 		return
 	}
 
-	name := c.Request.Form.Get("firstname")
-	lastname := c.Request.Form.Get("lastname")
-	fmt.Println(name, lastname)
+	name := c.Request.Form.Get("firstName")
+	lastName := c.Request.Form.Get("lastName")
+	fmt.Println(name, lastName)
 
 	fmt.Fprintln(c.Writer, "Form submitted fine")
 }
