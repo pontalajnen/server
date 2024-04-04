@@ -49,21 +49,40 @@ func postTest(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	// var user struct {
-	// 	Name  string `json:"name"`
-	// 	Email string `json:"email"`
-	// }
-	// if err := c.BindJSON(&user); err != nil {
-	// 	fmt.Fprintln(c.Writer, "hej")
-	// 	c.JSON(400, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// // TODO: create user in database
-	//c.JSON(201, gin.H{"message": "User created"})
+	var user struct {
+		Name  string
+		Email string
+	}
+	if err := c.BindJSON(&user); err != nil {
+		fmt.Fprintln(c.Writer, "hej")
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	// TODO: create user in database
+	c.JSON(201, gin.H{
+		"message": "User created",
+		"name":    user.Name,
+	})
 	fmt.Println("Wallahi")
 	fmt.Println(jsonData)
 	//fmt.Println(user)
 	fmt.Fprintln(c.Writer, jsonData)
+}
+
+func userHandler(c *gin.Context) {
+	var user struct {
+		Name  string
+		Email string
+	}
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	// TODO: create user in database
+	c.JSON(201, gin.H{
+		"message": "User created",
+		"name":    user.Name,
+	})
 }
 
 func loginHandler(c *gin.Context) {
@@ -91,6 +110,7 @@ func main() {
 	engine.POST("/name", postHandler)
 	engine.POST("/login", loginHandler)
 	engine.POST("/test", postTest)
+	engine.POST("/users", userHandler)
 
 	// Run the server
 	err := engine.Run(":8080")
