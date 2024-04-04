@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -40,6 +41,31 @@ func postHandler(c *gin.Context) {
 	fmt.Fprintln(c.Writer, "Form submitted fine")
 }
 
+func postTest(c *gin.Context) {
+	jsonData, err := io.ReadAll(c.Request.Body)
+
+	//err := c.Request.ParseForm()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// var user struct {
+	// 	Name  string `json:"name"`
+	// 	Email string `json:"email"`
+	// }
+	// if err := c.BindJSON(&user); err != nil {
+	// 	fmt.Fprintln(c.Writer, "hej")
+	// 	c.JSON(400, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// // TODO: create user in database
+	//c.JSON(201, gin.H{"message": "User created"})
+	fmt.Println("Wallahi")
+	fmt.Println(jsonData)
+	//fmt.Println(user)
+	fmt.Fprintln(c.Writer, jsonData)
+}
+
 func loginHandler(c *gin.Context) {
 	err := c.Request.ParseForm()
 	if err != nil {
@@ -64,6 +90,7 @@ func main() {
 	engine.GET("/", helloHandler)
 	engine.POST("/name", postHandler)
 	engine.POST("/login", loginHandler)
+	engine.POST("/test", postTest)
 
 	// Run the server
 	err := engine.Run(":8080")
